@@ -22,7 +22,7 @@ It was partly inspired by [the vscode extension by sinageos](https://github.com/
 
 ```lua
 {
-  'lucidph3nx/nvim-sops',
+  'nickclyde/nvim-sops',
   event = { 'BufEnter' },
   opts = {
     -- your configuration comes here
@@ -35,7 +35,7 @@ It was partly inspired by [the vscode extension by sinageos](https://github.com/
 
 ```lua
 use {
-  'lucidph3nx/nvim-sops',
+  'nickclyde/nvim-sops',
   config = function()
     require('nvim_sops').setup {
       -- your configuration comes here

@@ -81,22 +81,36 @@ M.file_decrypt = function()
 	local error_code = vim.v.shell_error
 
 	if error_code ~= 0 then
-		-- Print both the error code and the command output
-		print("Error decrypting file: " .. input_file)
-		print("Error code:", error_code)
-		print("Command output:", output)
+		-- Build error message
+		local error_msg = {
+			"Error decrypting file: " .. input_file,
+			"Error code: " .. error_code,
+			"Command output: " .. output,
+		}
 
-		-- Additional debug information
-		debug("Environment variables:")
-		for key, value in pairs(sops_options.sopsGeneralEnvVars) do
-			debug(key .. "=" .. value)
+		-- Add debug information if debug mode is on
+		if vim.g.nvim_sops_debug then
+			table.insert(error_msg, "\nDebug information:")
+			table.insert(error_msg, "Environment variables:")
+			for key, value in pairs(sops_options.sopsGeneralEnvVars) do
+				table.insert(error_msg, string.format("%s=%s", key, value))
+			end
+			table.insert(error_msg, "File path: " .. input_file)
 		end
-		debug("File path:", input_file)
+
+		-- Send to Neovim's notification system
+		vim.notify(table.concat(error_msg, "\n"), vim.log.levels.ERROR, {
+			title = "nvim-sops Decryption Error",
+			timeout = 10000, -- 10 seconds
+		})
 		return
 	end
 
 	-- Only reload the buffer if decryption was successful
 	vim.api.nvim_command("edit")
+	vim.notify("File decrypted successfully", vim.log.levels.INFO, {
+		title = "nvim-sops",
+	})
 end
 
 return M
